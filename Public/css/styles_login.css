@@ -1,0 +1,306 @@
+:root {
+    --primary-red: #c62828;      /* Rojo institucional */
+    --dark-gray: #47474a;        /* Fondo gris oscuro */
+    --panel-white: #fff;
+    --input-border: #e0e0e0;
+    --placeholder: #999;
+    --btn-hover: #b71c1c;
+    --btn-invited: #757575;
+}
+
+body {
+    margin: 0;
+    font-family: 'Montserrat', Arial, sans-serif;
+    background: var(--dark-gray);
+    color: #222;
+    height: 100vh;
+    overflow: hidden;
+}
+.auth-page {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+}
+.auth-image {
+    width: 55%;
+    flex: 0 0 55%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    background-image: 
+      linear-gradient(120deg,rgba(198,40,40,0.7) 60%,rgba(71,71,74,0.65) 100%),
+      url('../../Resources/sport_background.jpg');
+    background-size: cover;
+    background-position: center;
+}
+.welcome-content {
+    text-align: left;
+    z-index: 2;
+    max-width: 650px;
+    margin: 0 0 60px 48px;
+}
+.welcome-content h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #fff;
+    text-shadow: 0 3px 14px rgba(71,71,74,0.18);
+    margin-bottom: 18px;
+    line-height: 1.1;
+}
+.welcome-content span,
+.welcome-content em {
+    font-style: italic;
+    font-weight: 600;
+    letter-spacing: 1px;
+}
+.welcome-content p {
+    font-size: 1.1rem;
+    color: #fff;
+    line-height: 1.5;
+}
+.auth-container {
+    width: 45%;
+    flex: 0 0 45%;
+    min-width: 440px;
+    max-width: 600px;
+    margin: auto;
+    background: var(--panel-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-sizing: border-box;
+    border-radius: 20px;
+    box-shadow: 0 0 0 12px var(--dark-gray);
+    padding: 60px 55px 40px 55px;
+    align-items: stretch;
+    min-height: 80vh;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+.auth-header img {
+    width: 170px;
+    height: auto;
+    margin-bottom: 10px;
+}
+.auth-header h2 {
+    margin: 14px 0 10px 0;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--dark-gray);
+}
+.auth-header p {
+    color: #757575;
+    font-size: 1rem;
+}
+
+.form-group {
+    margin-bottom: 22px;
+}
+.form-group label {
+    display: block;
+    font-size: 1.05rem;
+    color: var(--dark-gray);
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.form-group label i {
+    color: var(--primary-red);
+    margin-right: 6px;
+}
+.form-control {
+    width: 100%;
+    padding: 15px 16px;
+    border: 1.7px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 1.09rem;
+    background: #fcfcfc;
+    color: var(--dark-gray);
+    transition: border 0.2s;
+    margin-bottom: 2px;
+    box-sizing: border-box;
+}
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-red);
+    background: #fff;
+}
+.form-control::placeholder {
+    color: var(--placeholder);
+    font-size: 0.98rem;
+    font-weight: 400;
+}
+.password-field {
+    position: relative;
+}
+.toggle-password {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #757575;
+    font-size: 1.1rem;
+    transition: color 0.3s ease;
+    z-index: 10;
+}
+.toggle-password:hover {
+    color: var(--primary-red);
+}
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+.form-check input[type="checkbox"] {
+    accent-color: var(--primary-red);
+    width: 16px;
+    height: 16px;
+    margin-right: 7px;
+}
+.form-check label {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--dark-gray);
+    font-weight: 500;
+    font-size: 1rem;
+    margin: 0;
+    cursor: pointer;
+}
+.form-check label i.fas.fa-check-square {
+    color: var(--primary-red);
+    font-size: 1.1rem;
+    margin-right: 3px;
+}
+.btn {
+    padding: 18px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 1.13rem;
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    margin: 28px 0 16px 0;
+    background: var(--primary-red);
+    color: #fff;
+    transition: background 0.18s;
+    box-shadow: 0 2px 10px rgba(198,40,40,0.08);
+}
+.btn:hover {
+    background: var(--btn-hover);
+}
+.btn-invited {
+    background: var(--btn-invited);
+    color: #fff;
+    margin-top: 18px;
+    font-weight: 600;
+    font-size: 1.07rem;
+    padding: 13px 20px;
+    border-radius: 8px;
+    border: none;
+}
+.btn-invited:hover {
+    background: #5b5b5b;
+}
+a {
+    color: var(--primary-red);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.16s;
+}
+a:hover {
+    color: var(--btn-hover);
+}
+.forgot-password {
+    text-align: center;
+    margin-bottom: 6px;
+    font-size: 0.99rem;
+    color: #757575;
+}
+.auth-footer {
+    margin-top: 18px;
+    text-align: center;
+    color: #757575;
+    font-size: 1rem;
+}
+.alert-danger {
+    color: #c62828;
+    background: #ffebee;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    border: 1.2px solid #e57373;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+    animation: slideInDown 0.3s ease;
+}
+@keyframes slideInDown {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+@media (max-width: 1200px) {
+    .auth-container {
+        width: 100%;
+        min-width: unset;
+        max-width: 700px;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 40px 18px 22px 18px;
+        margin: 0 auto;
+    }
+    .auth-image {
+        width: 100%;
+        min-width: unset;
+        max-width: unset;
+        border-radius: 0;
+        height: 280px;
+        align-items: flex-start;
+        justify-content: flex-end;
+    }
+}
+@media (max-width: 900px) {
+    .auth-page {
+        flex-direction: column;
+    }
+    .auth-container {
+        min-width: unset;
+        max-width: 100vw;
+        border-radius: 0;
+        padding: 24px 4vw;
+    }
+    .auth-image {
+        display: none;
+    }
+}
+@media (max-width: 600px) {
+    .auth-container {
+        padding: 14px 1vw;
+    }
+    .auth-header img {
+        width: 120px;
+    }
+}
+.text-center {
+    text-align: center;
+}
+
+.ipd-logo {
+    width: 100%;
+    max-width: 440px; /* el ancho máximo que quieras */
+    height: auto;
+    margin-bottom: 28px;
+}
