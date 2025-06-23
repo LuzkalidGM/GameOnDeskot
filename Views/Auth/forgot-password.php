@@ -148,7 +148,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </form>
                 
                 <div class="back-to-login">
-                    <a href="login.php">
+                    <a href="../../index.php">
                         <i class="fas fa-arrow-left"></i>
                         Volver al inicio de sesión
                     </a>
