@@ -355,6 +355,7 @@ CREATE TABLE IF NOT EXISTS `instituciones_deportivas` (
   `usuario_instalacion_id` int NOT NULL,
   `nombre` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
   `ruc_institucion` varchar(11) COLLATE utf8mb4_general_ci NOT NULL,
+
   `direccion` varchar(200) COLLATE utf8mb4_general_ci NOT NULL,
   `latitud` decimal(10,8) NOT NULL,
   `longitud` decimal(11,8) NOT NULL,
