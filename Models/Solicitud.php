@@ -15,7 +15,7 @@ class Solicitud {
      * Obtiene todas las solicitudes, opcionalmente filtradas por estado.
      */
     public function obtenerTodas($estado = null) {
-        $query = "SELECT id, nombre_institucion, ruc, email, documento_path, estado, fecha_solicitud FROM " . $this->table_name;
+        $query = "SELECT id, nombre_institucion, ruc_institucion, email, documento_path, estado, fecha_solicitud FROM " . $this->table_name;
         if ($estado) {
             $query .= " WHERE estado = ?";
         }
@@ -79,9 +79,9 @@ class Solicitud {
 
             // 2. Crear la institución en la tabla `instituciones_deportivas`
             $stmt_inst = $this->conn->prepare(
-                "INSERT INTO instituciones_deportivas (usuario_instalacion_id, nombre, ruc, email, estado) VALUES (?, ?, ?, ?, 'activa')"
+                "INSERT INTO instituciones_deportivas (usuario_instalacion_id, nombre, ruc_institucion, email, estado) VALUES (?, ?, ?, ?, 'activa')"
             );
-            $stmt_inst->bind_param("isss", $new_user_id, $solicitud['nombre_institucion'], $solicitud['ruc'], $solicitud['email']);
+            $stmt_inst->bind_param("isss", $new_user_id, $solicitud['nombre_institucion'], $solicitud['ruc_institucion'], $solicitud['email']);
             $stmt_inst->execute();
             $stmt_inst->close();
 
@@ -103,8 +103,8 @@ class Solicitud {
             if ($e->getCode() == 1062) {
                 if (strpos($e->getMessage(), 'username') !== false) {
                     $this->error = "Error: Ya existe un usuario con el email '{$solicitud['email']}'.";
-                } elseif (strpos($e->getMessage(), 'ruc') !== false) {
-                    $this->error = "Error: Ya existe una institución con el RUC '{$solicitud['ruc']}'.";
+                } elseif (strpos($e->getMessage(), 'ruc_institucion') !== false) {
+                    $this->error = "Error: Ya existe una institución con el RUC '{$solicitud['ruc_institucion']}'.";
                 } else {
                     $this->error = "Error: Conflicto de datos duplicados.";
                 }

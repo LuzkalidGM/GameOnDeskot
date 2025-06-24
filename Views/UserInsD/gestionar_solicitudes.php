@@ -41,7 +41,7 @@ include_once 'header.php';
                 <?php foreach ($solicitudes_pendientes as $solicitud): ?>
                     <tr>
                         <td><?php echo htmlspecialchars($solicitud['nombre_institucion']); ?></td>
-                        <td><?php echo htmlspecialchars($solicitud['ruc']); ?></td>
+                        <td><?php echo htmlspecialchars($solicitud['ruc_institucion']); ?></td>
                         <td><?php echo htmlspecialchars($solicitud['email']); ?></td>
                         <td><?php echo htmlspecialchars($solicitud['fecha_solicitud']); ?></td>
                         <td><a href="../../<?php echo htmlspecialchars($solicitud['documento_path']); ?>" target="_blank">Ver PDF</a></td>
