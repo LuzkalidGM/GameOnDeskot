@@ -44,7 +44,7 @@ include_once 'header.php';
                         <td><?php echo htmlspecialchars($solicitud['ruc']); ?></td>
                         <td><?php echo htmlspecialchars($solicitud['email']); ?></td>
                         <td><?php echo htmlspecialchars($solicitud['fecha_solicitud']); ?></td>
-                        <td><a href="../../<?php echo htmlspecialchars($solicitud['documento_path']); ?>" target="_blank">Ver PDF</a></td>
+                                                <td><a href="<?php echo htmlspecialchars($solicitud['documento_path']); ?>" target="_blank">Ver PDF</a></td>
                         <td class="actions">
                             <form action="" method="POST">
                                 <input type="hidden" name="solicitud_id" value="<?php echo $solicitud['id']; ?>">
