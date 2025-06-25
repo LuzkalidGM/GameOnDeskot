@@ -164,6 +164,65 @@ include_once 'header.php';
     }
 </script>
 
+<?php if (isset($email_params)): ?>
+<!-- Incluir la librería de EmailJS -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<script type="text/javascript">
+    // Inicializa EmailJS con tu clave pública.
+    // TODO: Reemplaza 'YOUR_PUBLIC_KEY' con tu clave pública de EmailJS.
+    (function() {
+        emailjs.init('Kg-QrgkrkkcEyD0MZ');
+    })();
+
+    // Espera a que el DOM esté completamente cargado para ejecutar el script.
+    document.addEventListener('DOMContentLoaded', function() {
+        // Convierte los parámetros de PHP a un objeto JavaScript.
+        const emailParams = <?php echo json_encode($email_params); ?>;
+
+        // Prepara los parámetros para la plantilla de EmailJS.
+        const templateParams = {
+            to_email: emailParams.to_email,
+            nombre_institucion: emailParams.nombre_institucion,
+            username: emailParams.username || '', // Asegura que no sea undefined
+            password: emailParams.password || '', // Asegura que no sea undefined
+            motivo_rechazo: emailParams.motivo_rechazo || '' // Asegura que no sea undefined
+        };
+
+        if (emailParams.action === 'aprobar') {
+            // TODO: Reemplaza con tu Service ID y Template ID para la plantilla de APROBACIÓN.
+            const serviceID = 'service_gameon';
+            const templateID = 'template_4tf6l3d';
+
+            console.log("Enviando correo de aprobación a:", templateParams.to_email);
+            emailjs.send(serviceID, templateID, templateParams)
+                .then(function(response) {
+                   console.log('ÉXITO!', response.status, response.text);
+                   alert('La solicitud fue aprobada y el correo de notificación ha sido enviado.');
+                }, function(error) {
+                   console.log('FALLÓ...', error);
+                   alert('La solicitud fue aprobada, pero hubo un error al enviar el correo de notificación. Revisa la consola para más detalles.');
+                });
+
+        } else if (emailParams.action === 'rechazar') {
+            // TODO: Reemplaza con tu Service ID y Template ID para la plantilla de RECHAZO.
+            const serviceID = 'service_gameon';
+            const templateID = 'template_4tf6l3d0';
+
+            console.log("Enviando correo de rechazo a:", templateParams.to_email);
+            emailjs.send(serviceID, templateID, templateParams)
+                .then(function(response) {
+                   console.log('ÉXITO!', response.status, response.text);
+                   alert('La solicitud fue rechazada y el correo de notificación ha sido enviado.');
+                }, function(error) {
+                   console.log('FALLÓ...', error);
+                   alert('La solicitud fue rechazada, pero hubo un error al enviar el correo de notificación. Revisa la consola para más detalles.');
+                });
+        }
+    });
+</script>
+<?php endif; ?>
+
 <?php
 // Incluir pie de página
 include_once 'footer.php';
