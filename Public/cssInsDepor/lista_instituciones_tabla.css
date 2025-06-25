@@ -15,7 +15,7 @@
 
 .table thead th {
     padding: 12px 10px;
-    color: #444;
+    color: #b81c22; /* Rojo personalizado */
     font-weight: bold;
     border-bottom: 2px solid #e8eaed;
     text-align: left;
@@ -26,6 +26,7 @@
     padding: 10px 10px;
     border-bottom: 1px solid #e8eaed;
     vertical-align: middle;
+    color: #222;
 }
 
 .table tbody tr:last-child td {
@@ -41,7 +42,7 @@
 }
 
 .table tbody tr:hover {
-    background: #eaf6ff;
+    background: #ffe9ea; /* Rojo claro para hover */
     transition: background 0.2s;
 }
 
@@ -50,7 +51,7 @@
     font-size: 14px;
     border-radius: 4px;
     border: none;
-    background: #0d6efd;
+    background: #b81c22; /* Rojo personalizado */
     color: #fff !important;
     cursor: pointer;
     text-decoration: none;
@@ -60,24 +61,63 @@
 }
 
 .btn-small-inst.btn-edit {
-    background: #0d6efd;
+    background: #b81c22;
 }
 .btn-small-inst.btn-edit:hover {
-    background: #084298;
+    background: #910f13;
 }
 
 .btn-small-inst.btn-wa {
     background: #25d366;
     color: #fff !important;
+    border: none;
 }
 .btn-small-inst.btn-wa:hover {
     background: #128c7e;
     color: #fff !important;
 }
 
-.table i.fab.fa-whatsapp {
-    color: #25d366;
-    font-size: 1.1em;
-    margin-left: 2px;
-    vertical-align: text-bottom;
+/* WhatsApp icon para columna de teléfono */
+.table a .fa-whatsapp,
+.table .btn-small-inst.btn-wa .fa-whatsapp {
+    color: #25d366 !important;
+    font-size: 1.15em;
+    margin-left: 3px;
+    vertical-align: middle;
+}
+
+/* Para resaltar el enlace de teléfono en rojo al pasar el mouse */
+.table td a[href^="https://wa.me/"]:hover {
+    color: #b81c22;
+    text-decoration: underline;
+}
+
+@media (max-width: 800px) {
+    .table thead {
+        display: none;
+    }
+    .table, .table tbody, .table tr, .table td {
+        display: block;
+        width: 100%;
+    }
+    .table tr {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+    }
+    .table td {
+        padding-left: 45%;
+        position: relative;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+    .table td:before {
+        position: absolute;
+        left: 10px;
+        width: 40%;
+        white-space: nowrap;
+        font-weight: bold;
+        color: #b81c22;
+        content: attr(data-label);
+    }
 }
