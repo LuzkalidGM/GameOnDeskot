@@ -79,7 +79,7 @@ class Solicitud {
 
             // 2. Crear la institución en la tabla `instituciones_deportivas`
             $stmt_inst = $this->conn->prepare(
-                  "INSERT INTO instituciones_deportivas (usuario_instalacion_id, nombre, ruc_institucion, email, direccion, latitud, longitud, tarifa, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+                  "INSERT INTO instituciones_deportivas (usuario_instalacion_id, nombre, ruc, email, direccion, latitud, longitud, tarifa, telefono) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
               );
               // Provide default values for fields not present in the request
               $direccion = 'N/A';

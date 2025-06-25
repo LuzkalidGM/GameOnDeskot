@@ -464,16 +464,16 @@ CREATE TABLE IF NOT EXISTS `solicitudes_registro` (
   `fecha_solicitud` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `fecha_revision` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   `revisado_por` int DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email_unico` (`email`),
-  UNIQUE KEY `ruc_unico` (`ruc`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla railway.solicitudes_registro: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla railway.solicitudes_registro: ~5 rows (aproximadamente)
 INSERT INTO `solicitudes_registro` (`id`, `nombre_institucion`, `ruc`, `email`, `password`, `documento_path`, `estado`, `motivo_rechazo`, `fecha_solicitud`, `fecha_revision`, `revisado_por`) VALUES
-	(1, 'canchaCali', '88888888888', 'ac2022074258@virtual.upt.pe', '$2y$10$Mtq8ALC8kFYe.6VgDUG8uumqJBqfDW3vm16sZQfS70zaGyVPuDQfu', 'https://cdn.filestackcontent.com/C1fy4n68TUOv2xPGyZ8n', 'pendiente', NULL, '2025-06-24 20:53:52', NULL, NULL),
+	(1, 'canchaCali', '88888888888', 'ac2022074258@virtual.upt.pe', '$2y$10$Mtq8ALC8kFYe.6VgDUG8uumqJBqfDW3vm16sZQfS70zaGyVPuDQfu', 'https://cdn.filestackcontent.com/C1fy4n68TUOv2xPGyZ8n', 'rechazada', 'Por ser muy CRACK Gaaa', '2025-06-24 20:53:52', '2025-06-25 16:29:40', 1),
 	(2, 'canchapero', '99999999999', 'myrayita2004@gmail.com', '$2y$10$ndWhStrtgsn7lx/3RpZdYueOQJ15ceFgLZyAgw3nRRnaTHFR4S4gK', 'https://cdn.filestackcontent.com/bDeKviLRSwe1Zl66GbP8', 'aprobada', NULL, '2025-06-24 21:14:51', '2025-06-24 22:21:20', 1),
-	(3, 'Victor Cruz Mamani', '12345678901', 'pepito@gmail.com', '$2y$10$vzxkUGK7DwOGFCI4d6Rki.VEARpJo3Ii3Z/zqeJVgHFzxZI526wEO', 'https://cdn.filestackcontent.com/UXmDlyrcT6mx4Y9tQu6H', 'aprobada', NULL, '2025-06-24 23:50:27', '2025-06-24 23:51:31', 1);
+	(3, 'Victor Cruz Mamani', '12345678901', 'pepito@gmail.com', '$2y$10$vzxkUGK7DwOGFCI4d6Rki.VEARpJo3Ii3Z/zqeJVgHFzxZI526wEO', 'https://cdn.filestackcontent.com/UXmDlyrcT6mx4Y9tQu6H', 'aprobada', NULL, '2025-06-24 23:50:27', '2025-06-24 23:51:31', 1),
+	(10, 'a', '10987654321', 'a@xd.com', '$2y$10$pLT3NHNKKsB3zTnlYZH3qObNk8JP5B2Y02pAOYWJl1c8EvIpedyKm', 'https://cdn.filestackcontent.com/rwjNbpmXSEue753cKjhR', 'pendiente', NULL, '2025-06-25 17:01:56', NULL, NULL),
+	(13, 'canchitaaauwu', '11111111112', 'ac2022074258@virtual.upt.pe', '$2y$10$i8C1.NrMbHwtYcaXCWNO/eDfegTNYqQxyRAZLoj.J/NwtDjjhunbC', 'https://cdn.filestackcontent.com/DWIvcFYYS36NIMA89IMB', 'pendiente', NULL, '2025-06-25 17:21:26', NULL, NULL);
 
 -- Volcando estructura para tabla railway.torneos
 CREATE TABLE IF NOT EXISTS `torneos` (
@@ -509,7 +509,7 @@ CREATE TABLE IF NOT EXISTS `torneos` (
   CONSTRAINT `torneos_ibfk_2` FOREIGN KEY (`institucion_sede_id`) REFERENCES `instituciones_deportivas` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- Volcando datos para la tabla railway.torneos: ~1 rows (aproximadamente)
+-- Volcando datos para la tabla railway.torneos: ~0 rows (aproximadamente)
 INSERT INTO `torneos` (`id`, `nombre`, `descripcion`, `deporte_id`, `organizador_tipo`, `organizador_id`, `institucion_sede_id`, `max_equipos`, `equipos_inscritos`, `fecha_inicio`, `fecha_fin`, `fecha_inscripcion_inicio`, `fecha_inscripcion_fin`, `estado`, `modalidad`, `premio_1`, `premio_2`, `premio_3`, `costo_inscripcion`, `imagen_torneo`, `creado_en`, `actualizado_en`) VALUES
 	(7, 'CHAMPIONS LEAGUE TACNA - APERTURA I', 'La mejor edición Champions Tacna, ven, juega y gana y demuestra tus habilidades con tu equipo!', 1, 'institucion', 1, 1, 4, 0, '2025-07-20', '2025-07-20', '2025-06-30', '2025-07-10', 'proximo', 'eliminacion_simple', 'Un arroz con Huevo', 'Un huevo sin arroz', 'Un arroz sin huevo', 120.00, 'https://i.ibb.co/BHQxk6nj/3d686d3b1636.jpg', '2025-06-19 03:00:18', '2025-06-19 03:06:10');
 
@@ -715,7 +715,7 @@ CREATE TABLE IF NOT EXISTS `usuarios_instalaciones` (
   `culqi_enabled` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Volcando datos para la tabla railway.usuarios_instalaciones: ~4 rows (aproximadamente)
 INSERT INTO `usuarios_instalaciones` (`id`, `username`, `password`, `estado`, `created_at`, `tipo_usuario`, `culqi_public_key`, `culqi_secret_key`, `culqi_enabled`) VALUES
