@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../../Public/cssInsDepor/header_insd.css">
     <link rel="stylesheet" href="../../Public/cssInsDepor/dashboard_insd.css">
     <link rel="stylesheet" href="../../Public/cssInsDepor/footer_insd.css">
+    <link rel="stylesheet" href="../../Public/cssInsDepor/lista_instituciones_tabla.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>

@@ -1,0 +1,83 @@
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #fff;
+    box-shadow: 0 2px 8px 0 rgba(60,60,60,0.07);
+    border-radius: 8px;
+    overflow: hidden;
+    font-size: 15px;
+}
+
+.table thead {
+    background: #f7f8fa;
+}
+
+.table thead th {
+    padding: 12px 10px;
+    color: #444;
+    font-weight: bold;
+    border-bottom: 2px solid #e8eaed;
+    text-align: left;
+    letter-spacing: 0.5px;
+}
+
+.table tbody td {
+    padding: 10px 10px;
+    border-bottom: 1px solid #e8eaed;
+    vertical-align: middle;
+}
+
+.table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-striped tbody tr:nth-child(odd) {
+    background: #fbfbfc;
+}
+
+.table-striped tbody tr:nth-child(even) {
+    background: #f2f6fa;
+}
+
+.table tbody tr:hover {
+    background: #eaf6ff;
+    transition: background 0.2s;
+}
+
+.btn-small-inst {
+    padding: 4px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    border: none;
+    background: #0d6efd;
+    color: #fff !important;
+    cursor: pointer;
+    text-decoration: none;
+    margin-right: 5px;
+    display: inline-block;
+    transition: background 0.2s;
+}
+
+.btn-small-inst.btn-edit {
+    background: #0d6efd;
+}
+.btn-small-inst.btn-edit:hover {
+    background: #084298;
+}
+
+.btn-small-inst.btn-wa {
+    background: #25d366;
+    color: #fff !important;
+}
+.btn-small-inst.btn-wa:hover {
+    background: #128c7e;
+    color: #fff !important;
+}
+
+.table i.fab.fa-whatsapp {
+    color: #25d366;
+    font-size: 1.1em;
+    margin-left: 2px;
+    vertical-align: text-bottom;
+}

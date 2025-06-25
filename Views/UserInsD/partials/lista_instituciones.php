@@ -22,11 +22,11 @@
                     <td><?= htmlspecialchars($inst['ruc_institucion']) ?></td>
                     <td><?= htmlspecialchars($inst['direccion']) ?></td>
                     <td>
-    <a href="https://wa.me/<?= preg_replace('/\D/', '', $inst['telefono']) ?>" target="_blank" title="Contactar por WhatsApp">
-        <?= htmlspecialchars($inst['telefono']) ?>
-        <i class="fab fa-whatsapp" style="color:#25d366;"></i>
-    </a>
-</td>
+                        <a href="https://wa.me/<?= preg_replace('/\D/', '', $inst['telefono']) ?>" target="_blank" title="Contactar por WhatsApp">
+                            <?= htmlspecialchars($inst['telefono']) ?>
+                            <i class="fab fa-whatsapp" style="color:#25d366;"></i>
+                        </a>
+                    </td>
                     <td><?= htmlspecialchars($inst['email']) ?></td>
                     <td><?= number_format($inst['calificacion'], 1) ?></td>
                     <td><?= number_format($inst['tarifa'], 2) ?></td>
@@ -43,3 +43,4 @@
 <?php else: ?>
     <p>No hay instituciones registradas.</p>
 <?php endif; ?>
+
