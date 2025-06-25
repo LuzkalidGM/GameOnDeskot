@@ -18,14 +18,14 @@ if ($id <= 0) {
 require_once '../../Models/InstitucionesModel.php';
 $model = new InstitucionesModel();
 $institucion = $model->obtenerInstitucionPorId($id);
-
+$areas = $model->obtenerAreasPorInstitucion($id);
 include_once 'header.php';
 ?>
 
 <div class="dashboard-container-inst">
     <div class="dashboard-main-content-inst">
         <div class="main-panel-inst">
-            <div class="content-card-inst" style="max-width:700px; margin:auto;">
+            <div class="content-card-inst" style="max-width:900px; margin:auto;">
                 <div class="card-header-inst">
                     <h2><i class="fas fa-building"></i> Detalle de Institución Deportiva</h2>
                     <a href="listadoins.php" class="btn-outline-inst"><i class="fas fa-arrow-left"></i> Volver al Listado</a>
@@ -52,6 +52,37 @@ include_once 'header.php';
                             </p>
                         </div>
                     </div>
+                    <hr>
+                    <!-- Áreas deportivas asociadas -->
+                    <h4>Áreas Deportivas Asociadas</h4>
+                    <?php if (!empty($areas)): ?>
+                        <div style="overflow-x:auto;">
+                        <table class="table table-striped" style="width:100%; min-width:600px;">
+                            <thead>
+                                <tr>
+                                    <th>Nombre Área</th>
+                                    <th>Deporte</th>
+                                    <th>Capacidad</th>
+                                    <th>Tarifa (S/.)</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($areas as $area): ?>
+                                    <tr>
+                                        <td><?= htmlspecialchars($area['nombre_area']) ?></td>
+                                        <td><?= htmlspecialchars($area['deporte_nombre']) ?></td>
+                                        <td><?= htmlspecialchars($area['capacidad_jugadores']) ?></td>
+                                        <td><?= number_format($area['tarifa_por_hora'], 2) ?></td>
+                                        <td><?= ucfirst($area['estado']) ?></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                        </div>
+                    <?php else: ?>
+                        <p>No hay áreas deportivas asociadas.</p>
+                    <?php endif; ?>
                 <?php else: ?>
                     <div class="alert alert-danger">
                         <p>No se encontró la institución solicitada.</p>

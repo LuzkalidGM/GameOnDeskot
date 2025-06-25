@@ -29,6 +29,18 @@ class InstitucionesModel {
         return $res->num_rows > 0 ? $res->fetch_assoc() : null;
     }
 
-    
+    public function obtenerAreasPorInstitucion($institucion_id) {
+        $stmt = $this->conn->prepare("SELECT ad.*, d.nombre AS deporte_nombre FROM areas_deportivas ad
+            JOIN deportes d ON ad.deporte_id = d.id
+            WHERE ad.institucion_deportiva_id = ?");
+        $stmt->bind_param('i', $institucion_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $areas = [];
+        while ($row = $res->fetch_assoc()) {
+            $areas[] = $row;
+        }
+        return $areas;
+    }
 }
 ?>
