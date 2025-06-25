@@ -22,7 +22,9 @@
                     <td><?= htmlspecialchars($inst['ruc_institucion']) ?></td>
                     <td><?= htmlspecialchars($inst['direccion']) ?></td>
                     <td>
-                        <a href="https://wa.me/<?= preg_replace('/\D/', '', $inst['telefono']) ?>" target="_blank" title="Contactar por WhatsApp">
+                        <a href="https://wa.me/<?= preg_replace('/\D/', '', $inst['telefono']) ?>"
+                        target="_blank" rel="noopener noreferrer"
+                        title="Contactar a <?= htmlspecialchars($inst['nombre']) ?> por WhatsApp">
                             <?= htmlspecialchars($inst['telefono']) ?>
                             <i class="fab fa-whatsapp" style="color:#25d366;"></i>
                         </a>

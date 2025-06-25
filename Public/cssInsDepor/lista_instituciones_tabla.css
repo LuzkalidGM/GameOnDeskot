@@ -89,7 +89,9 @@
 /* Para resaltar el enlace de teléfono en rojo al pasar el mouse */
 .table td a[href^="https://wa.me/"]:hover {
     color: #b81c22;
-    text-decoration: underline;
+}
+.table td a[href^="https://wa.me/"]:hover .fa-whatsapp {
+    color: #b81c22;
 }
 
 @media (max-width: 800px) {
