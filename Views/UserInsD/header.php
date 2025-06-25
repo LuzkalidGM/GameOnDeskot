@@ -29,6 +29,7 @@
                 <li><a href="reservas.php">RESERVAS</a></li>
                 <li><a href="torneos.php">TORNEOS</a></li>
                 <li><a href="gestionar_solicitudes.php">GESTIONAR SOLICITUDES</a></li>
+                <li><a href="listadoins.php">INSTITUCIONES</a></li>
             </ul>
         </nav>
         <div class="header-user-inst">
