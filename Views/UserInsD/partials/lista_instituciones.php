@@ -7,6 +7,12 @@
         onkeyup="filtrarInstituciones()"
         autocomplete="off"
     >
+    <button onclick="exportTableToExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
+        <i class="fas fa-file-excel"></i> Exportar a Excel
+    </button>
+    <button onclick="exportTableToPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
+        <i class="fas fa-file-pdf"></i> Exportar a PDF
+    </button>
 </div>
 
 <?php if (!empty($instituciones)): ?>
@@ -57,7 +63,9 @@
     <p>No hay instituciones registradas.</p>
 <?php endif; ?>
 
+<!-- Scripts de filtrado y exportación -->
 <script>
+// Filtrado instantáneo
 function filtrarInstituciones() {
     let input = document.getElementById('filtroInstituciones');
     let filtro = input.value.toLowerCase();
@@ -77,4 +85,57 @@ function filtrarInstituciones() {
         filas[i].style.display = mostrar ? '' : 'none';
     }
 }
+
+// Exportar a Excel
+function exportTableToExcel(tableID, filename = ''){
+    var downloadLink;
+    var dataType = 'application/vnd.ms-excel';
+    var tableSelect = document.getElementById(tableID);
+    // Solo tomar filas visibles
+    var rows = tableSelect.querySelectorAll('tr');
+    var tableHTML = '<table>';
+    for(var i=0; i<rows.length; i++) {
+        if(rows[i].style.display !== "none") {
+            tableHTML += rows[i].outerHTML;
+        }
+    }
+    tableHTML += '</table>';
+    filename = filename?filename+'.xls':'instituciones.xls';
+    downloadLink = document.createElement("a");
+    document.body.appendChild(downloadLink);
+    if(navigator.msSaveOrOpenBlob){
+        var blob = new Blob(['\ufeff', tableHTML], {type: dataType});
+        navigator.msSaveOrOpenBlob( blob, filename);
+    }else{
+        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+        downloadLink.download = filename;
+        downloadLink.click();
+    }
+}
+
+// Exportar a PDF (requiere jsPDF y autoTable)
+function exportTableToPDF() {
+    var { jsPDF } = window.jspdf;
+    var doc = new jsPDF('l', 'pt', 'a4');
+    doc.text("Listado de Instituciones Deportivas", 40, 40);
+
+    let table = document.getElementById("tablaInstituciones");
+    let rows = Array.from(table.querySelectorAll("tbody tr")).filter(r => r.style.display !== "none");
+    let body = rows.map(row => Array.from(row.children).map(cell => cell.innerText.trim()));
+    let head = [Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText.trim())];
+
+    doc.autoTable({
+        head: head,
+        body: body,
+        startY: 60,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [184,28,34] }
+    });
+
+    doc.save('instituciones.pdf');
+}
 </script>
+
+<!-- Incluye jsPDF y autoTable sólo una vez en tu proyecto -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
