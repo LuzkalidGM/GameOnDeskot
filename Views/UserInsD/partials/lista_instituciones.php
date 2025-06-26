@@ -18,13 +18,12 @@ foreach ($instituciones as $inst) {
         id="filtroInstituciones"
         placeholder="Filtrar por nombre, RUC, dirección, teléfono o email..."
         style="padding:8px 12px; width:320px; border-radius:6px; border:1px solid #ccc; font-size:1em;"
-        onkeyup="filtrarInstituciones()"
         autocomplete="off"
     >
-    <button type="button" onclick="exportTableToExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
-        <i class="fas fa-file-excel"></i> Exportar a Excel/CSV
+    <button id="btnExcel" type="button" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
+        <i class="fas fa-file-excel"></i> Exportar a Excel
     </button>
-    <button type="button" onclick="exportTableToPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
+    <button id="btnPDF" type="button" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
         <i class="fas fa-file-pdf"></i> Exportar a PDF
     </button>
 </div>
@@ -38,7 +37,7 @@ foreach ($instituciones as $inst) {
     </div>
 <?php endif; ?>
 
-<!-- Modal para mostrar el CSV en modo escritorio -->
+<!-- Modal para mostrar el CSV si está en Nativefier/Electron -->
 <div id="csvModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
   <div style="background:#fff; padding:24px; border-radius:8px; max-width:95vw; max-height:95vh; overflow:auto;">
     <h3>Exportar a Excel/CSV</h3>
@@ -101,115 +100,121 @@ foreach ($instituciones as $inst) {
     <p>No hay instituciones registradas.</p>
 <?php endif; ?>
 
-<!-- Scripts de filtrado y exportación -->
-<script>
-// Filtrado instantáneo
-function filtrarInstituciones() {
-    let input = document.getElementById('filtroInstituciones');
-    let filtro = input.value.toLowerCase();
-    let tabla = document.getElementById('tablaInstituciones');
-    let filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
-
-    for (let i = 0; i < filas.length; i++) {
-        let celdas = filas[i].getElementsByTagName('td');
-        let mostrar = false;
-        // Filtrar por nombre, RUC, dirección, teléfono o email
-        for (let j = 1; j <= 5; j++) {
-            if (celdas[j] && celdas[j].textContent.toLowerCase().indexOf(filtro) > -1) {
-                mostrar = true;
-                break;
-            }
-        }
-        filas[i].style.display = mostrar ? '' : 'none';
-    }
-}
-
-// Exportar a Excel/CSV (muestra modal en modo escritorio y descarga en web)
-function exportTableToExcel(tableID){
-    // Detecta si está en Nativefier/Electron
-    let isElectron = navigator.userAgent.toLowerCase().indexOf('electron') > -1 || window.nativefier;
-    let table = document.getElementById(tableID);
-    let rows = table.querySelectorAll('tr');
-    let csv = [];
-    for (let i = 0; i < rows.length; i++) {
-        if (rows[i].style.display === "none") continue;
-        let row = [], cols = rows[i].querySelectorAll('th,td');
-        for (let j = 0; j < cols.length; j++) {
-            let text = cols[j].innerText.replace(/\n/g, ' ').replace(/\s\s+/g, ' ').trim();
-            text = '"' + text.replace(/"/g, '""') + '"';
-            row.push(text);
-        }
-        csv.push(row.join(";"));
-    }
-    let csvString = csv.join("\r\n");
-
-    if (isElectron) {
-        // Mostrar modal para copiar el CSV
-        document.getElementById('csvTextArea').value = csvString;
-        document.getElementById('csvModal').style.display = 'flex';
-    } else {
-        // Descarga normal en navegador web
-        let csvFile = new Blob([csvString], { type: "text/csv" });
-        let downloadLink = document.createElement("a");
-        downloadLink.download = 'instituciones.csv';
-        downloadLink.href = window.URL.createObjectURL(csvFile);
-        downloadLink.style.display = "none";
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-    }
-}
-
-function copyCSVToClipboard() {
-    let textarea = document.getElementById('csvTextArea');
-    textarea.select();
-    document.execCommand('copy');
-    alert('¡CSV copiado al portapapeles!');
-}
-
-function closeCSVModal() {
-    document.getElementById('csvModal').style.display = 'none';
-}
-
-// Exportar a PDF (intenta y avisa si falla)
-function exportTableToPDF() {
-    if (!window.jspdf || !window.jspdf.jsPDF) {
-        alert("jsPDF no está cargado correctamente.");
-        return;
-    }
-    let isElectron = navigator.userAgent.toLowerCase().indexOf('electron') > -1 || window.nativefier;
-    var { jsPDF } = window.jspdf;
-    var doc = new jsPDF('l', 'pt', 'a4');
-    doc.text("Listado de Instituciones Deportivas", 40, 40);
-
-    let table = document.getElementById("tablaInstituciones");
-    let rows = Array.from(table.querySelectorAll("tbody tr")).filter(r => r.style.display !== "none");
-    let body = rows.map(row => Array.from(row.children).map(cell => cell.innerText.trim()));
-    let head = [Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText.trim())];
-
-    if (doc.autoTable) {
-        doc.autoTable({
-            head: head,
-            body: body,
-            startY: 60,
-            styles: { fontSize: 8 },
-            headStyles: { fillColor: [184,28,34] }
-        });
-        try {
-            doc.save('instituciones.pdf');
-        } catch(e) {
-            if (isElectron) {
-                alert("La exportación a PDF no es compatible en este modo escritorio. Use la versión web o copie la tabla manualmente.");
-            } else {
-                alert("Ocurrió un error al exportar a PDF.");
-            }
-        }
-    } else {
-        alert("autoTable plugin no está cargado correctamente.");
-    }
-}
-</script>
-
-<!-- Incluye jsPDF y autoTable una sola vez en tu proyecto -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+
+    function filtrarInstituciones() {
+        let input = document.getElementById('filtroInstituciones');
+        let filtro = input.value.toLowerCase();
+        let tabla = document.getElementById('tablaInstituciones');
+        let filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+        for (let i = 0; i < filas.length; i++) {
+            let celdas = filas[i].getElementsByTagName('td');
+            let mostrar = false;
+            // Filtrar por nombre, RUC, dirección, teléfono o email
+            for (let j = 1; j <= 5; j++) {
+                if (celdas[j] && celdas[j].textContent.toLowerCase().indexOf(filtro) > -1) {
+                    mostrar = true;
+                    break;
+                }
+            }
+            filas[i].style.display = mostrar ? '' : 'none';
+        }
+    }
+
+    function exportTableToExcel(tableID){
+        // Detecta si está en Nativefier/Electron
+        let isElectron = navigator.userAgent.toLowerCase().indexOf('electron') > -1 || window.nativefier;
+        let table = document.getElementById(tableID);
+        let rows = table.querySelectorAll('tr');
+        let csv = [];
+        for (let i = 0; i < rows.length; i++) {
+            if (rows[i].style.display === "none") continue;
+            let row = [], cols = rows[i].querySelectorAll('th,td');
+            for (let j = 0; j < cols.length; j++) {
+                let text = cols[j].innerText.replace(/\n/g, ' ').replace(/\s\s+/g, ' ').trim();
+                text = '"' + text.replace(/"/g, '""') + '"';
+                row.push(text);
+            }
+            csv.push(row.join(";"));
+        }
+        let csvString = csv.join("\r\n");
+
+        if (isElectron) {
+            // Mostrar modal para copiar el CSV
+            document.getElementById('csvTextArea').value = csvString;
+            document.getElementById('csvModal').style.display = 'flex';
+        } else {
+            // Descarga normal en navegador web
+            let csvFile = new Blob([csvString], { type: "text/csv" });
+            let downloadLink = document.createElement("a");
+            downloadLink.download = 'instituciones.csv';
+            downloadLink.href = window.URL.createObjectURL(csvFile);
+            downloadLink.style.display = "none";
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+        }
+    }
+
+    function copyCSVToClipboard() {
+        let textarea = document.getElementById('csvTextArea');
+        textarea.select();
+        document.execCommand('copy');
+        alert('¡CSV copiado al portapapeles!');
+    }
+
+    function closeCSVModal() {
+        document.getElementById('csvModal').style.display = 'none';
+    }
+
+    function exportTableToPDF() {
+        if (!window.jspdf || !window.jspdf.jsPDF) {
+            alert("jsPDF no está cargado correctamente.");
+            return;
+        }
+        let isElectron = navigator.userAgent.toLowerCase().indexOf('electron') > -1 || window.nativefier;
+        var { jsPDF } = window.jspdf;
+        var doc = new jsPDF('l', 'pt', 'a4');
+        doc.text("Listado de Instituciones Deportivas", 40, 40);
+
+        let table = document.getElementById("tablaInstituciones");
+        let rows = Array.from(table.querySelectorAll("tbody tr")).filter(r => r.style.display !== "none");
+        let body = rows.map(row => Array.from(row.children).map(cell => cell.innerText.trim()));
+        let head = [Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText.trim())];
+
+        if (doc.autoTable) {
+            doc.autoTable({
+                head: head,
+                body: body,
+                startY: 60,
+                styles: { fontSize: 8 },
+                headStyles: { fillColor: [184,28,34] }
+            });
+            try {
+                doc.save('instituciones.pdf');
+            } catch(e) {
+                if (isElectron) {
+                    alert("La exportación a PDF no es compatible en este modo escritorio. Use la versión web o copie la tabla manualmente.");
+                } else {
+                    alert("Ocurrió un error al exportar a PDF.");
+                }
+            }
+        } else {
+            alert("autoTable plugin no está cargado correctamente.");
+        }
+    }
+
+    // Asigna funciones a los botones usando addEventListener
+    document.getElementById('filtroInstituciones').addEventListener('keyup', filtrarInstituciones);
+    document.getElementById('btnExcel').addEventListener('click', function(){ exportTableToExcel('tablaInstituciones'); });
+    document.getElementById('btnPDF').addEventListener('click', exportTableToPDF);
+
+    // Expone funciones globales para el modal
+    window.copyCSVToClipboard = copyCSVToClipboard;
+    window.closeCSVModal = closeCSVModal;
+});
+</script>
