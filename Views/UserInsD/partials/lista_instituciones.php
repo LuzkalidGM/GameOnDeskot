@@ -86,7 +86,7 @@ function filtrarInstituciones() {
     }
 }
 
-// Exportar a Excel/CSV
+// Exportar a Excel/CSV (punto y coma para compatibilidad)
 function exportTableToExcel(tableID, filename = ''){
     let table = document.getElementById(tableID);
     let rows = table.querySelectorAll('tr');
@@ -96,15 +96,12 @@ function exportTableToExcel(tableID, filename = ''){
         if (rows[i].style.display === "none") continue;
         let row = [], cols = rows[i].querySelectorAll('th,td');
         for (let j = 0; j < cols.length; j++) {
-            // Si es un enlace, toma solo el texto
             let text = cols[j].innerText.replace(/\n/g, ' ').replace(/\s\s+/g, ' ').trim();
-            // Escapa comillas dobles
             text = '"' + text.replace(/"/g, '""') + '"';
             row.push(text);
         }
-        csv.push(row.join(","));
+        csv.push(row.join(";")); // Cambiado a punto y coma
     }
-    // Genera el archivo CSV
     let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
     filename = filename ? filename + '.csv' : 'instituciones.csv';
     let downloadLink = document.createElement("a");
