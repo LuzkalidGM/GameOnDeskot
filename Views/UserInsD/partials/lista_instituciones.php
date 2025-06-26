@@ -1,3 +1,17 @@
+<?php
+// Estadística: instalación con mayor cantidad de áreas deportivas
+$max_areas = 0;
+$top_instalacion = null;
+// Suponiendo que cada institución tiene el campo 'total_areas' (ajusta si usas otro método)
+foreach ($instituciones as $inst) {
+    $areas = isset($inst['total_areas']) ? $inst['total_areas'] : 0;
+    if ($areas > $max_areas) {
+        $max_areas = $areas;
+        $top_instalacion = $inst;
+    }
+}
+?>
+
 <div style="margin-bottom:16px;">
     <input
         type="text"
@@ -7,12 +21,34 @@
         onkeyup="filtrarInstituciones()"
         autocomplete="off"
     >
-    <button onclick="exportTableToExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
+    <button type="button" onclick="exportTableToExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
         <i class="fas fa-file-excel"></i> Exportar a Excel/CSV
     </button>
-    <button onclick="exportTableToPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
+    <button type="button" onclick="exportTableToPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
         <i class="fas fa-file-pdf"></i> Exportar a PDF
     </button>
+</div>
+
+<?php if ($top_instalacion): ?>
+    <div style="padding:16px; background:#fff3f3; border:1px solid #ffcaca; border-radius:10px; margin-bottom:18px; display:flex; align-items:center;">
+        <i class="fas fa-trophy" style="color:#b81c22; font-size:1.6em; margin-right:18px;"></i>
+        <div>
+            <strong><?= htmlspecialchars($top_instalacion['nombre']) ?></strong> es la instalación con más áreas deportivas (<?= $max_areas ?> áreas).
+        </div>
+    </div>
+<?php endif; ?>
+
+<!-- Modal para mostrar el CSV en modo escritorio -->
+<div id="csvModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:24px; border-radius:8px; max-width:95vw; max-height:95vh; overflow:auto;">
+    <h3>Exportar a Excel/CSV</h3>
+    <p>Copia el siguiente contenido y pégalo en Excel:</p>
+    <textarea id="csvTextArea" style="width:100%; height:300px;"></textarea>
+    <div style="margin-top:12px;">
+      <button onclick="copyCSVToClipboard()">Copiar al portapapeles</button>
+      <button onclick="closeCSVModal()">Cerrar</button>
+    </div>
+  </div>
 </div>
 
 <?php if (!empty($instituciones)): ?>
@@ -28,6 +64,7 @@
                 <th>Email</th>
                 <th>Calificación</th>
                 <th>Tarifa (S/.)</th>
+                <th>Áreas deportivas</th>
                 <th>Acción</th>
             </tr>
         </thead>
@@ -49,6 +86,7 @@
                     <td><?= htmlspecialchars($inst['email']) ?></td>
                     <td><?= number_format($inst['calificacion'], 1) ?></td>
                     <td><?= number_format($inst['tarifa'], 2) ?></td>
+                    <td><?= isset($inst['total_areas']) ? (int)$inst['total_areas'] : 0 ?></td>
                     <td>
                         <a href="ver_institucion.php?id=<?= $inst['id'] ?>" class="btn-small-inst btn-edit" title="Ver Detalles">
                             <i class="fas fa-eye"></i> Ver Detalle
@@ -86,13 +124,14 @@ function filtrarInstituciones() {
     }
 }
 
-// Exportar a Excel/CSV (punto y coma para compatibilidad)
-function exportTableToExcel(tableID, filename = ''){
+// Exportar a Excel/CSV (muestra modal en modo escritorio y descarga en web)
+function exportTableToExcel(tableID){
+    // Detecta si está en Nativefier/Electron
+    let isElectron = navigator.userAgent.toLowerCase().indexOf('electron') > -1 || window.nativefier;
     let table = document.getElementById(tableID);
     let rows = table.querySelectorAll('tr');
     let csv = [];
     for (let i = 0; i < rows.length; i++) {
-        // Solo filas visibles
         if (rows[i].style.display === "none") continue;
         let row = [], cols = rows[i].querySelectorAll('th,td');
         for (let j = 0; j < cols.length; j++) {
@@ -100,21 +139,45 @@ function exportTableToExcel(tableID, filename = ''){
             text = '"' + text.replace(/"/g, '""') + '"';
             row.push(text);
         }
-        csv.push(row.join(";")); // Cambiado a punto y coma
+        csv.push(row.join(";"));
     }
-    let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
-    filename = filename ? filename + '.csv' : 'instituciones.csv';
-    let downloadLink = document.createElement("a");
-    downloadLink.download = filename;
-    downloadLink.href = window.URL.createObjectURL(csvFile);
-    downloadLink.style.display = "none";
-    document.body.appendChild(downloadLink);
-    downloadLink.click();
-    document.body.removeChild(downloadLink);
+    let csvString = csv.join("\r\n");
+
+    if (isElectron) {
+        // Mostrar modal para copiar el CSV
+        document.getElementById('csvTextArea').value = csvString;
+        document.getElementById('csvModal').style.display = 'flex';
+    } else {
+        // Descarga normal en navegador web
+        let csvFile = new Blob([csvString], { type: "text/csv" });
+        let downloadLink = document.createElement("a");
+        downloadLink.download = 'instituciones.csv';
+        downloadLink.href = window.URL.createObjectURL(csvFile);
+        downloadLink.style.display = "none";
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+    }
 }
 
-// Exportar a PDF (requiere jsPDF y autoTable)
+function copyCSVToClipboard() {
+    let textarea = document.getElementById('csvTextArea');
+    textarea.select();
+    document.execCommand('copy');
+    alert('¡CSV copiado al portapapeles!');
+}
+
+function closeCSVModal() {
+    document.getElementById('csvModal').style.display = 'none';
+}
+
+// Exportar a PDF (intenta y avisa si falla)
 function exportTableToPDF() {
+    if (!window.jspdf || !window.jspdf.jsPDF) {
+        alert("jsPDF no está cargado correctamente.");
+        return;
+    }
+    let isElectron = navigator.userAgent.toLowerCase().indexOf('electron') > -1 || window.nativefier;
     var { jsPDF } = window.jspdf;
     var doc = new jsPDF('l', 'pt', 'a4');
     doc.text("Listado de Instituciones Deportivas", 40, 40);
@@ -124,15 +187,26 @@ function exportTableToPDF() {
     let body = rows.map(row => Array.from(row.children).map(cell => cell.innerText.trim()));
     let head = [Array.from(table.querySelectorAll("thead tr th")).map(th => th.innerText.trim())];
 
-    doc.autoTable({
-        head: head,
-        body: body,
-        startY: 60,
-        styles: { fontSize: 8 },
-        headStyles: { fillColor: [184,28,34] }
-    });
-
-    doc.save('instituciones.pdf');
+    if (doc.autoTable) {
+        doc.autoTable({
+            head: head,
+            body: body,
+            startY: 60,
+            styles: { fontSize: 8 },
+            headStyles: { fillColor: [184,28,34] }
+        });
+        try {
+            doc.save('instituciones.pdf');
+        } catch(e) {
+            if (isElectron) {
+                alert("La exportación a PDF no es compatible en este modo escritorio. Use la versión web o copie la tabla manualmente.");
+            } else {
+                alert("Ocurrió un error al exportar a PDF.");
+            }
+        }
+    } else {
+        alert("autoTable plugin no está cargado correctamente.");
+    }
 }
 </script>
 
