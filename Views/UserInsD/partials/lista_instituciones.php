@@ -1,5 +1,5 @@
 <?php
-// Sumar totales
+// Sumar totales para mostrar en tarjeta resumen
 $total_instalaciones = 0;
 $total_areas = 0;
 foreach ($instituciones as $inst) {
@@ -13,7 +13,7 @@ foreach ($instituciones as $inst) {
         <h2 style="margin-bottom:12px;">
             <i class="fas fa-list-alt" style="color:#b81c22"></i> Instituciones Registradas
         </h2>
-        <!-- Tarjeta resumen fuera de la tabla -->
+        <!-- Tarjetas resumen fuera de la tabla -->
         <div style="display:flex; gap: 24px; margin-bottom:16px;">
             <div style="
                 background: #fff3f3;
@@ -50,10 +50,62 @@ foreach ($instituciones as $inst) {
                 </div>
             </div>
         </div>
-        <!-- Aquí va tu tabla original -->
-        <!-- ... -->
+        <!-- Tabla de instituciones -->
+        <?php if (!empty($instituciones)): ?>
+            <div style="overflow-x:auto;">
+            <table class="table table-striped" style="width:100%; min-width:900px;">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>RUC</th>
+                        <th>Dirección</th>
+                        <th>Teléfono</th>
+                        <th>Email</th>
+                        <th>Calificación</th>
+                        <th>Tarifa (S/.)</th>
+                        <th># Instalaciones</th>
+                        <th># Áreas</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($instituciones as $i => $inst): ?>
+                        <tr>
+                            <td><?= $i+1 ?></td>
+                            <td><?= htmlspecialchars($inst['nombre']) ?></td>
+                            <td><?= htmlspecialchars($inst['ruc_institucion']) ?></td>
+                            <td><?= htmlspecialchars($inst['direccion']) ?></td>
+                            <td>
+                                <a href="https://wa.me/<?= preg_replace('/\D/', '', $inst['telefono']) ?>" target="_blank" rel="noopener noreferrer" title="Contactar por WhatsApp">
+                                    <?= htmlspecialchars($inst['telefono']) ?>
+                                    <i class="fab fa-whatsapp" style="color:#25d366;"></i>
+                                </a>
+                            </td>
+                            <td><?= htmlspecialchars($inst['email']) ?></td>
+                            <td><?= number_format($inst['calificacion'], 1) ?></td>
+                            <td><?= number_format($inst['tarifa'], 2) ?></td>
+                            <td>
+                                <?= $model->contarInstalacionesPorInstitucion($inst['id']) ?>
+                            </td>
+                            <td>
+                                <?= $model->contarAreasPorInstitucion($inst['id']) ?>
+                            </td>
+                            <td>
+                                <a href="ver_institucion.php?id=<?= $inst['id'] ?>" class="btn-small-inst btn-edit" title="Ver Detalles">
+                                    <i class="fas fa-eye"></i> Ver Detalle
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            </div>
+        <?php else: ?>
+            <p>No hay instituciones registradas.</p>
+        <?php endif; ?>
     </div>
-    <!-- Panel de ayuda (ya existente en tu diseño) -->
+    <!-- Panel de ayuda existente -->
     <div style="min-width:330px;">
         <div class="ayuda-card">
             <div style="display:flex; align-items:center; gap:8px;">
