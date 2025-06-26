@@ -1,11 +1,5 @@
 <?php
-// Sumar totales para mostrar en tarjeta resumen
-$total_instalaciones = 0;
-$total_areas = 0;
-foreach ($instituciones as $inst) {
-    $total_instalaciones += $model->contarInstalacionesPorInstitucion($inst['id']);
-    $total_areas += $model->contarAreasPorInstitucion($inst['id']);
-}
+// Suponiendo que $instituciones, $total_instalaciones y $total_areas ya vienen del controlador
 ?>
 
 <div style="display: flex; gap: 24px; align-items: flex-start;">
