@@ -11,6 +11,9 @@ class InstitucionesController {
     public function listar() {
         return $this->model->obtenerInstituciones();
     }
+    public function getModel() {
+    return $this->model;
+}
 
     // Métodos para totales generales
     public function contarTotalInstalaciones() {
