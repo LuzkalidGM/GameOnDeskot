@@ -28,3 +28,20 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    var excelBtn = document.getElementById('btnExcelSidebar');
+    var pdfBtn = document.getElementById('btnPDFSidebar');
+    if (excelBtn) {
+        excelBtn.disabled = false; // fuerza habilitado
+        excelBtn.style.pointerEvents = "auto";
+        excelBtn.style.opacity = 1;
+    }
+    if (pdfBtn) {
+        pdfBtn.disabled = false; // fuerza habilitado
+        pdfBtn.style.pointerEvents = "auto";
+        pdfBtn.style.opacity = 1;
+    }
+});
+</script>
