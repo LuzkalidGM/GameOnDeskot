@@ -41,5 +41,5 @@ include_once 'header.php';
     </div>
 </div>
 
-<script src="../../Public/js/dashboard_instituciones.js"></script>
+<script src="http://ipdgameon-cxfhfxdncyfwfkf7.eastus-01.azurewebsites.net/Public/js/dashboard_instituciones.js"></script>
 <?php include_once 'footer.php'; ?>
