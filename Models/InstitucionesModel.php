@@ -42,5 +42,24 @@ class InstitucionesModel {
         }
         return $areas;
     }
+    public function contarInstalacionesPorInstitucion($institucion_id) {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM instalaciones_deportivas WHERE institucion_deportiva_id = ?");
+        $stmt->bind_param('i', $institucion_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        return $row ? $row['total'] : 0;
+    }
+
+    public function contarAreasPorInstitucion($institucion_id) {
+        $stmt = $this->conn->prepare("SELECT COUNT(*) AS total FROM areas_deportivas WHERE institucion_deportiva_id = ?");
+        $stmt->bind_param('i', $institucion_id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        return $row ? $row['total'] : 0;
+    }
+
+
 }
 ?>
