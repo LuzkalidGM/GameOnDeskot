@@ -1,6 +1,17 @@
+<div style="margin-bottom:16px;">
+    <input
+        type="text"
+        id="filtroInstituciones"
+        placeholder="Filtrar por nombre, RUC, dirección, teléfono o email..."
+        style="padding:8px 12px; width:320px; border-radius:6px; border:1px solid #ccc; font-size:1em;"
+        onkeyup="filtrarInstituciones()"
+        autocomplete="off"
+    >
+</div>
+
 <?php if (!empty($instituciones)): ?>
     <div style="overflow-x:auto;">
-    <table class="table table-striped" style="width:100%; min-width:750px;">
+    <table id="tablaInstituciones" class="table table-striped" style="width:100%; min-width:750px;">
         <thead>
             <tr>
                 <th>#</th>
@@ -37,7 +48,6 @@
                             <i class="fas fa-eye"></i> Ver Detalle
                         </a>
                     </td>
-                    
                 </tr>
             <?php endforeach; ?>
         </tbody>
@@ -47,3 +57,24 @@
     <p>No hay instituciones registradas.</p>
 <?php endif; ?>
 
+<script>
+function filtrarInstituciones() {
+    let input = document.getElementById('filtroInstituciones');
+    let filtro = input.value.toLowerCase();
+    let tabla = document.getElementById('tablaInstituciones');
+    let filas = tabla.getElementsByTagName('tbody')[0].getElementsByTagName('tr');
+
+    for (let i = 0; i < filas.length; i++) {
+        let celdas = filas[i].getElementsByTagName('td');
+        let mostrar = false;
+        // Filtrar por nombre, RUC, dirección, teléfono o email
+        for (let j = 1; j <= 5; j++) {
+            if (celdas[j] && celdas[j].textContent.toLowerCase().indexOf(filtro) > -1) {
+                mostrar = true;
+                break;
+            }
+        }
+        filas[i].style.display = mostrar ? '' : 'none';
+    }
+}
+</script>
