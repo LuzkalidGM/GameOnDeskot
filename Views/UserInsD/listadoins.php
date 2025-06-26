@@ -37,14 +37,7 @@ include_once 'header.php';
                 <?php include 'partials/lista_instituciones.php'; ?>
             </div>
         </div>
-        <div class="sidebar-panel-inst">
-            <div class="sidebar-card-inst">
-                <h3><i class="fas fa-info-circle"></i> Ayuda</h3>
-                <div class="info-content">
-                    <p>Haz clic en una institución para ver más información o comparar servicios y precios.</p>
-                </div>
-            </div>
-        </div>
+        <?php include 'side_botone.php'; ?>
     </div>
 </div>
 

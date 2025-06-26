@@ -2,7 +2,6 @@
 // Estadística: instalación con mayor cantidad de áreas deportivas
 $max_areas = 0;
 $top_instalacion = null;
-// Suponiendo que cada institución tiene el campo 'total_areas' (ajusta si usas otro método)
 foreach ($instituciones as $inst) {
     $areas = isset($inst['total_areas']) ? $inst['total_areas'] : 0;
     if ($areas > $max_areas) {
@@ -20,12 +19,6 @@ foreach ($instituciones as $inst) {
         style="padding:8px 12px; width:320px; border-radius:6px; border:1px solid #ccc; font-size:1em;"
         autocomplete="off"
     >
-    <button id="btnExcel" type="button" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
-        <i class="fas fa-file-excel"></i> Exportar a Excel
-    </button>
-    <button id="btnPDF" type="button" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
-        <i class="fas fa-file-pdf"></i> Exportar a PDF
-    </button>
 </div>
 
 <?php if ($top_instalacion): ?>
@@ -36,19 +29,6 @@ foreach ($instituciones as $inst) {
         </div>
     </div>
 <?php endif; ?>
-
-<!-- Modal para mostrar el CSV si está en Nativefier/Electron -->
-<div id="csvModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
-  <div style="background:#fff; padding:24px; border-radius:8px; max-width:95vw; max-height:95vh; overflow:auto;">
-    <h3>Exportar a Excel/CSV</h3>
-    <p>Copia el siguiente contenido y pégalo en Excel:</p>
-    <textarea id="csvTextArea" style="width:100%; height:300px;"></textarea>
-    <div style="margin-top:12px;">
-      <button onclick="copyCSVToClipboard()">Copiar al portapapeles</button>
-      <button onclick="closeCSVModal()">Cerrar</button>
-    </div>
-  </div>
-</div>
 
 <?php if (!empty($instituciones)): ?>
     <div style="overflow-x:auto;">
@@ -100,11 +80,23 @@ foreach ($instituciones as $inst) {
     <p>No hay instituciones registradas.</p>
 <?php endif; ?>
 
+<!-- Modal para mostrar el CSV si está en Nativefier/Electron -->
+<div id="csvModal" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:24px; border-radius:8px; max-width:95vw; max-height:95vh; overflow:auto;">
+    <h3>Exportar a Excel/CSV</h3>
+    <p>Copia el siguiente contenido y pégalo en Excel:</p>
+    <textarea id="csvTextArea" style="width:100%; height:300px;"></textarea>
+    <div style="margin-top:12px;">
+      <button onclick="copyCSVToClipboard()">Copiar al portapapeles</button>
+      <button onclick="closeCSVModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-
     function filtrarInstituciones() {
         let input = document.getElementById('filtroInstituciones');
         let filtro = input.value.toLowerCase();
@@ -126,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function exportTableToExcel(tableID){
-        // Detecta si está en Nativefier/Electron
         let isElectron = navigator.userAgent.toLowerCase().indexOf('electron') > -1 || window.nativefier;
         let table = document.getElementById(tableID);
         let rows = table.querySelectorAll('tr');
@@ -144,11 +135,9 @@ document.addEventListener('DOMContentLoaded', function() {
         let csvString = csv.join("\r\n");
 
         if (isElectron) {
-            // Mostrar modal para copiar el CSV
             document.getElementById('csvTextArea').value = csvString;
             document.getElementById('csvModal').style.display = 'flex';
         } else {
-            // Descarga normal en navegador web
             let csvFile = new Blob([csvString], { type: "text/csv" });
             let downloadLink = document.createElement("a");
             downloadLink.download = 'instituciones.csv';
@@ -208,10 +197,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Asigna funciones a los botones usando addEventListener
     document.getElementById('filtroInstituciones').addEventListener('keyup', filtrarInstituciones);
-    document.getElementById('btnExcel').addEventListener('click', function(){ exportTableToExcel('tablaInstituciones'); });
-    document.getElementById('btnPDF').addEventListener('click', exportTableToPDF);
 
     // Expone funciones globales para el modal
     window.copyCSVToClipboard = copyCSVToClipboard;
