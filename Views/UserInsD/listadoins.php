@@ -37,7 +37,7 @@ include_once 'header.php';
                 <?php include 'partials/lista_instituciones.php'; ?>
             </div>
         </div>
-        <?php include 'side_botone.php'; ?>
+        
     </div>
 </div>
 
