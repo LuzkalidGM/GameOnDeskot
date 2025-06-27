@@ -146,14 +146,14 @@ include_once 'header.php';
                                     <span><i class="fas fa-running"></i> <?= $instalacion['total_areas'] ?> áreas</span>
                                 </div>
                             </div>
-                            <div class="instalacion-actions-inst">
+                            <!--<div class="instalacion-actions-inst">
                                 <button class="btn-small-inst btn-edit" onclick="editarInstalacion(<?= $instalacion['id'] ?>)">
                                     <i class="fas fa-eye"></i> Ver
                                 </button>
                                 <button class="btn-small-inst btn-schedule" onclick="gestionarHorarios(<?= $instalacion['id'] ?>)">
                                     <i class="fas fa-clock"></i> Horarios
                                 </button>
-                            </div>
+                            </div> !-->
                         </div>
                         <?php endforeach; ?>
                     <?php else: ?>
