@@ -45,11 +45,29 @@ include_once 'header.php';
                             <p><strong>Tarifa:</strong> S/. <?= number_format($institucion['tarifa'], 2) ?></p>
                             <p><strong>Calificación:</strong> <?= number_format($institucion['calificacion'], 1) ?></p>
                             <p><strong>Descripción:</strong> <?= nl2br(htmlspecialchars($institucion['descripcion'])) ?></p>
-                            <p><strong>Ubicación:</strong> 
+                            <p><strong>Ubicación:</strong>
                                 <a href="https://maps.google.com/?q=<?= $institucion['latitud'] ?>,<?= $institucion['longitud'] ?>" target="_blank">
                                     Ver en Google Maps
                                 </a>
                             </p>
+
+                            <?php if (!empty($institucion['latitud']) && !empty($institucion['longitud'])): ?>
+                                <div id="mapaInstitucion" style="width:100%;max-width:600px;height:350px;margin:16px 0;border-radius:12px;box-shadow:0 2px 8px #0002;"></div>
+                                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+                                <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+                                <script>
+                                    document.addEventListener("DOMContentLoaded", function() {
+                                        var map = L.map('mapaInstitucion').setView([<?= $institucion['latitud'] ?>, <?= $institucion['longitud'] ?>], 16);
+                                        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                                        }).addTo(map);
+                                        L.marker([<?= $institucion['latitud'] ?>, <?= $institucion['longitud'] ?>])
+                                            .addTo(map)
+                                            .bindPopup("<?= htmlspecialchars($institucion['nombre']) ?>")
+                                            .openPopup();
+                                    });
+                                </script>
+                            <?php endif; ?>
                         </div>
                     </div>
                     <hr>
