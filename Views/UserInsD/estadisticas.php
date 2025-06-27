@@ -5,20 +5,20 @@ if (!isset($_SESSION['user_id']) || !isset($_SESSION['user_type']) || $_SESSION[
     exit();
 }
 
-require_once '../../Models/InstitucionesModel.php';
-$model = new InstitucionesModel();
-
-// 1. Cantidad de instituciones registradas por mes/año
-$institucionesPorMes = [];
+require_once '../../Config/Database.php';
 $conn = (new Database())->getConnection();
+
+// 1. Cantidad de instituciones registradas por mes/año (GENERAL)
+$institucionesPorMes = [];
 $sql1 = "SELECT DATE_FORMAT(creado_en, '%Y-%m') as periodo, COUNT(*) as cantidad 
-         FROM instituciones_deportivas GROUP BY periodo ORDER BY periodo";
+         FROM instituciones_deportivas 
+         GROUP BY periodo ORDER BY periodo";
 $res1 = $conn->query($sql1);
 while ($row = $res1->fetch_assoc()) {
     $institucionesPorMes[] = $row;
 }
 
-// 2. Distribución de áreas deportivas por tipo de deporte
+// 2. Distribución de áreas deportivas por tipo de deporte (GENERAL)
 $areasPorDeporte = [];
 $sql2 = "SELECT d.nombre as deporte, COUNT(*) as cantidad 
          FROM areas_deportivas ad
@@ -29,61 +29,64 @@ while ($row = $res2->fetch_assoc()) {
     $areasPorDeporte[] = $row;
 }
 
-// 3. Evolución de reservas por mes
+// 3. Evolución de reservas por mes (GENERAL)
 $reservasPorMes = [];
 $sql3 = "SELECT DATE_FORMAT(fecha, '%Y-%m') as periodo, COUNT(*) as cantidad 
-         FROM reservas GROUP BY periodo ORDER BY periodo";
+         FROM reservas 
+         GROUP BY periodo ORDER BY periodo";
 $res3 = $conn->query($sql3);
 while ($row = $res3->fetch_assoc()) {
     $reservasPorMes[] = $row;
 }
 
-// 4. Estado de instituciones
-$estadosInstitucion = [];
-$sql4 = "SELECT CASE estado WHEN 1 THEN 'Activa' ELSE 'Inactiva' END as estado, COUNT(*) as cantidad 
-         FROM instituciones_deportivas GROUP BY estado";
-$res4 = $conn->query($sql4);
-while ($row = $res4->fetch_assoc()) {
-    $estadosInstitucion[] = $row;
+// 4. Torneos creados por mes (GENERAL)
+$torneosPorMes = [];
+$sqlTorneos = "SELECT DATE_FORMAT(creado_en, '%Y-%m') as periodo, COUNT(*) as cantidad 
+               FROM torneos 
+               GROUP BY periodo ORDER BY periodo";
+$resTorneos = $conn->query($sqlTorneos);
+while ($row = $resTorneos->fetch_assoc()) {
+    $torneosPorMes[] = $row;
 }
 
 include_once 'header.php';
 ?>
+<link rel="stylesheet" href="../../Public/cssInsDepor/estadisticas.css">
+
 <div class="dashboard-container-inst">
-    <div class="dashboard-main-content-inst">
+    <div class="dashboard-main-content-inst" style="max-width:1800px;">
         <div class="main-panel-inst">
-            <div class="content-card-inst" style="max-width:1200px; margin:auto;">
-                <div class="card-header-inst">
-                    <h2><i class="fas fa-chart-bar"></i> Estadísticas del Sistema</h2>
+            <div class="content-card-inst" style="max-width:1700px; margin:auto; box-shadow:0 8px 40px rgba(44,62,80,0.13);">
+                <div class="card-header-inst" style="margin-bottom:32px;">
+                    <h2><i class="fas fa-chart-bar"></i> Estadísticas Generales del Sistema</h2>
                 </div>
-                <div style="display: flex; flex-wrap:wrap; gap: 40px;">
-                    <!-- Gráfico 1 -->
-                    <div style="flex:1; min-width:320px;">
-                        <h3 style="text-align:center;">Instituciones registradas por mes</h3>
-                        <canvas id="graficoInstituciones"></canvas>
+                <!-- PRIMERA FILA - 3 GRAFICOS -->
+                <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr); display: grid; gap: 36px;">
+                    <div class="dashboard-card">
+                        <h3>Instituciones registradas por mes</h3>
+                        <canvas id="graficoInstituciones" height="160"></canvas>
                     </div>
-                    <!-- Gráfico 2 -->
-                    <div style="flex:1; min-width:320px;">
-                        <h3 style="text-align:center;">Áreas por deporte</h3>
-                        <canvas id="graficoAreas"></canvas>
+                    <div class="dashboard-card">
+                        <h3>Áreas por deporte</h3>
+                        <canvas id="graficoAreas" height="160"></canvas>
+                    </div>
+                    <div class="dashboard-card">
+                        <h3>Torneos creados por mes</h3>
+                        <canvas id="graficoTorneos" height="160"></canvas>
                     </div>
                 </div>
-                <div style="display: flex; flex-wrap:wrap; gap: 40px; margin-top:40px;">
-                    <!-- Gráfico 3 -->
-                    <div style="flex:1; min-width:320px;">
-                        <h3 style="text-align:center;">Reservas por mes</h3>
-                        <canvas id="graficoReservas"></canvas>
-                    </div>
-                    <!-- Gráfico 4 -->
-                    <div style="flex:1; min-width:320px;">
-                        <h3 style="text-align:center;">Estado de Instituciones</h3>
-                        <canvas id="graficoEstados"></canvas>
+                <!-- SEGUNDA FILA - 1 GRAFICO ANCHO -->
+                <div class="dashboard-grid" style="grid-template-columns: 1fr; display: grid; gap: 36px; margin-top:40px;">
+                    <div class="dashboard-card" style="min-width:0;">
+                        <h3>Reservas por mes</h3>
+                        <canvas id="graficoReservas" height="120"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 <!-- Chart.js CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
@@ -102,7 +105,11 @@ new Chart(document.getElementById('graficoInstituciones'), {
     },
     options: {
         responsive: true,
-        plugins: { legend: { display: false } }
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, grid: { color: "#e0e0e0" } },
+            x: { grid: { color: "#f1f1f1" } }
+        }
     }
 });
 
@@ -137,31 +144,42 @@ new Chart(document.getElementById('graficoReservas'), {
             data: reservasData,
             fill: true,
             borderColor: '#d81b60',
-            backgroundColor: 'rgba(216,27,96,0.1)'
+            backgroundColor: 'rgba(216,27,96,0.13)',
+            tension: 0.4,
+            pointRadius: 5,
+            pointBackgroundColor: '#d81b60'
         }]
     },
     options: {
         responsive: true,
-        plugins: { legend: { display: false } }
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, grid: { color: "#e0e0e0" } },
+            x: { grid: { color: "#f1f1f1" } }
+        }
     }
 });
 
-/* 4. Estado de instituciones */
-const estadosLabels = <?= json_encode(array_column($estadosInstitucion, 'estado')) ?>;
-const estadosData = <?= json_encode(array_column($estadosInstitucion, 'cantidad')) ?>;
-new Chart(document.getElementById('graficoEstados'), {
-    type: 'pie',
+/* 4. Torneos por mes */
+const torneosLabels = <?= json_encode(array_column($torneosPorMes, 'periodo')) ?>;
+const torneosData = <?= json_encode(array_column($torneosPorMes, 'cantidad')) ?>;
+new Chart(document.getElementById('graficoTorneos'), {
+    type: 'bar',
     data: {
-        labels: estadosLabels,
+        labels: torneosLabels,
         datasets: [{
-            label: 'Estado',
-            data: estadosData,
-            backgroundColor: ['#0ca678','#e57373','#ffd740','#64b5f6']
+            label: 'Torneos',
+            data: torneosData,
+            backgroundColor: '#673ab7'
         }]
     },
     options: {
         responsive: true,
-        plugins: { legend: { position: 'bottom' } }
+        plugins: { legend: { display: false } },
+        scales: {
+            y: { beginAtZero: true, grid: { color: "#e0e0e0" } },
+            x: { grid: { color: "#f1f1f1" } }
+        }
     }
 });
 </script>
