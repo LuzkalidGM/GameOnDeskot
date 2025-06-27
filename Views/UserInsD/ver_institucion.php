@@ -38,7 +38,7 @@ include_once 'header.php';
                         </div>
                         <div style="flex:1;">
                             <h3><?= htmlspecialchars($institucion['nombre']) ?></h3>
-                            <p><strong>RUC:</strong> <?= htmlspecialchars($institucion['ruc_institucion']) ?></p>
+                            <p><strong>RUC:</strong> <?= htmlspecialchars($institucion['ruc']) ?></p>
                             <p><strong>Dirección:</strong> <?= htmlspecialchars($institucion['direccion']) ?></p>
                             <p><strong>Teléfono:</strong> <?= htmlspecialchars($institucion['telefono']) ?></p>
                             <p><strong>Email:</strong> <?= htmlspecialchars($institucion['email']) ?></p>
