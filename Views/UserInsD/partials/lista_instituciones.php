@@ -8,7 +8,7 @@
         autocomplete="off"
     >
     <button onclick="exportTableToExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
-        <i class="fas fa-file-excel"></i> Exportar a Excel
+        <i class="fas fa-file-excel"></i> Exportar a Excel/CSV
     </button>
     <button onclick="exportTableToPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
         <i class="fas fa-file-pdf"></i> Exportar a PDF
@@ -22,6 +22,7 @@
             <tr>
                 <th>#</th>
                 <th>Nombre</th>
+                <th>RUC</th>
                 <th>Dirección</th>
                 <th>Teléfono</th>
                 <th>Email</th>
@@ -35,6 +36,7 @@
                 <tr>
                     <td><?= $i+1 ?></td>
                     <td><?= htmlspecialchars($inst['nombre']) ?></td>
+                    <td><?= htmlspecialchars($inst['ruc_institucion']) ?></td>
                     <td><?= htmlspecialchars($inst['direccion']) ?></td>
                     <td>
                         <a href="https://wa.me/<?= preg_replace('/\D/', '', $inst['telefono']) ?>"
@@ -84,31 +86,31 @@ function filtrarInstituciones() {
     }
 }
 
-// Exportar a Excel
+// Exportar a Excel/CSV (punto y coma para compatibilidad)
 function exportTableToExcel(tableID, filename = ''){
-    var downloadLink;
-    var dataType = 'application/vnd.ms-excel';
-    var tableSelect = document.getElementById(tableID);
-    // Solo tomar filas visibles
-    var rows = tableSelect.querySelectorAll('tr');
-    var tableHTML = '<table>';
-    for(var i=0; i<rows.length; i++) {
-        if(rows[i].style.display !== "none") {
-            tableHTML += rows[i].outerHTML;
+    let table = document.getElementById(tableID);
+    let rows = table.querySelectorAll('tr');
+    let csv = [];
+    for (let i = 0; i < rows.length; i++) {
+        // Solo filas visibles
+        if (rows[i].style.display === "none") continue;
+        let row = [], cols = rows[i].querySelectorAll('th,td');
+        for (let j = 0; j < cols.length; j++) {
+            let text = cols[j].innerText.replace(/\n/g, ' ').replace(/\s\s+/g, ' ').trim();
+            text = '"' + text.replace(/"/g, '""') + '"';
+            row.push(text);
         }
+        csv.push(row.join(";")); // Cambiado a punto y coma
     }
-    tableHTML += '</table>';
-    filename = filename?filename+'.xls':'instituciones.xls';
-    downloadLink = document.createElement("a");
+    let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
+    filename = filename ? filename + '.csv' : 'instituciones.csv';
+    let downloadLink = document.createElement("a");
+    downloadLink.download = filename;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
     document.body.appendChild(downloadLink);
-    if(navigator.msSaveOrOpenBlob){
-        var blob = new Blob(['\ufeff', tableHTML], {type: dataType});
-        navigator.msSaveOrOpenBlob( blob, filename);
-    }else{
-        downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
-        downloadLink.download = filename;
-        downloadLink.click();
-    }
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
 }
 
 // Exportar a PDF (requiere jsPDF y autoTable)
@@ -134,6 +136,6 @@ function exportTableToPDF() {
 }
 </script>
 
-<!-- Incluye jsPDF y autoTable sólo una vez en tu proyecto -->
+<!-- Incluye jsPDF y autoTable una sola vez en tu proyecto -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
