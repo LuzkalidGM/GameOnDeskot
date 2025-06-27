@@ -7,10 +7,10 @@
         onkeyup="filtrarInstituciones()"
         autocomplete="off"
     >
-    <button onclick="exportTableToExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
+    <button onclick="preguntarYExportarExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
         <i class="fas fa-file-excel"></i> Exportar a Excel/CSV
     </button>
-    <button onclick="exportTableToPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
+    <button onclick="preguntarYExportarPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
         <i class="fas fa-file-pdf"></i> Exportar a PDF
     </button>
 </div>
@@ -86,13 +86,28 @@ function filtrarInstituciones() {
     }
 }
 
-// Exportar a Excel/CSV (punto y coma para compatibilidad)
+/// Preguntar nombre para Excel/CSV y exportar
+function preguntarYExportarExcel(tableID) {
+    let nombre = prompt("Ingrese el nombre del archivo (sin extensión)", "instituciones");
+    if (nombre !== null) {
+        exportTableToExcel(tableID, nombre.trim());
+    }
+}
+
+// Preguntar nombre para PDF y exportar
+function preguntarYExportarPDF() {
+    let nombre = prompt("Ingrese el nombre del archivo (sin extensión)", "instituciones");
+    if (nombre !== null) {
+        exportTableToPDF(nombre.trim());
+    }
+}
+
+// Exportar a Excel/CSV (igual que antes, pero filename como parámetro)
 function exportTableToExcel(tableID, filename = ''){
     let table = document.getElementById(tableID);
     let rows = table.querySelectorAll('tr');
     let csv = [];
     for (let i = 0; i < rows.length; i++) {
-        // Solo filas visibles
         if (rows[i].style.display === "none") continue;
         let row = [], cols = rows[i].querySelectorAll('th,td');
         for (let j = 0; j < cols.length; j++) {
@@ -100,7 +115,7 @@ function exportTableToExcel(tableID, filename = ''){
             text = '"' + text.replace(/"/g, '""') + '"';
             row.push(text);
         }
-        csv.push(row.join(";")); // Cambiado a punto y coma
+        csv.push(row.join(";"));
     }
     let csvFile = new Blob([csv.join("\n")], { type: "text/csv" });
     filename = filename ? filename + '.csv' : 'instituciones.csv';
@@ -113,8 +128,8 @@ function exportTableToExcel(tableID, filename = ''){
     document.body.removeChild(downloadLink);
 }
 
-// Exportar a PDF (requiere jsPDF y autoTable)
-function exportTableToPDF() {
+// Exportar a PDF (filename como parámetro)
+function exportTableToPDF(filename = 'instituciones') {
     var { jsPDF } = window.jspdf;
     var doc = new jsPDF('l', 'pt', 'a4');
     doc.text("Listado de Instituciones Deportivas", 40, 40);
@@ -132,9 +147,8 @@ function exportTableToPDF() {
         headStyles: { fillColor: [184,28,34] }
     });
 
-    doc.save('instituciones.pdf');
+    doc.save(filename + '.pdf');
 }
-</script>
 
 <!-- Incluye jsPDF y autoTable una sola vez en tu proyecto -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
