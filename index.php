@@ -114,13 +114,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
             </div>
             
+            <!-- 
             <div class="auth-footer">
                 ¿No tienes cuenta? 
                 <a href="Views/UserInsD/registro_deportista_ipd.php">
                     <i class="fas fa-building"></i>
                     Registrate
                 </a>
-            </div>
+            </div> -->
         </div>
     </div>
     
