@@ -7,10 +7,10 @@
         onkeyup="filtrarInstituciones()"
         autocomplete="off"
     >
-    <button onclick="preguntarYExportarExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
+    <button onclick="modalExportarExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
         <i class="fas fa-file-excel"></i> Exportar a Excel/CSV
     </button>
-    <button onclick="preguntarYExportarPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
+    <button onclick="modalExportarPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
         <i class="fas fa-file-pdf"></i> Exportar a PDF
     </button>
 </div>
@@ -63,7 +63,18 @@
     <p>No hay instituciones registradas.</p>
 <?php endif; ?>
 
-<!-- Scripts de filtrado y exportación -->
+<!-- Modal para pedir el nombre del archivo -->
+<div id="modalNombreArchivo" style="display:none; position:fixed; z-index:9999; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.3); align-items:center; justify-content:center;">
+  <div style="background:#fff; padding:24px 20px; border-radius:8px; min-width:300px; box-shadow:0 2px 10px #0002;">
+    <h3 style="margin-top:0;">Guardar archivo como...</h3>
+    <input type="text" id="nombreArchivoInput" style="width:100%; padding:8px; font-size:1em; margin-bottom:14px;" placeholder="Ej: instituciones">
+    <div style="text-align:right;">
+      <button onclick="cerrarModalNombreArchivo()" style="margin-right:10px; background:#ccc; border:none; padding:8px 14px; border-radius:5px;">Cancelar</button>
+      <button id="btnAceptarNombreArchivo" style="background:#218838; color:#fff; border:none; padding:8px 16px; border-radius:5px;">Aceptar</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // Filtrado instantáneo
 function filtrarInstituciones() {
@@ -86,20 +97,43 @@ function filtrarInstituciones() {
     }
 }
 
-// Preguntar nombre para Excel/CSV y exportar
-function preguntarYExportarExcel(tableID) {
-    let nombre = prompt("Ingrese el nombre del archivo (sin extensión)", "instituciones");
-    if (nombre !== null && nombre.trim() !== "") {
-        exportTableToExcel(tableID, nombre.trim());
+// Modal para pedir nombre archivo y exportar
+let tipoExportacion = null;
+let tablaExportar = '';
+
+function abrirModalNombreArchivo(tipo, tablaID) {
+    tipoExportacion = tipo; // 'excel' o 'pdf'
+    tablaExportar = tablaID || '';
+    document.getElementById('nombreArchivoInput').value = '';
+    document.getElementById('modalNombreArchivo').style.display = 'flex';
+    document.getElementById('nombreArchivoInput').focus();
+
+    // Botón aceptar
+    document.getElementById('btnAceptarNombreArchivo').onclick = function() {
+        let nombre = document.getElementById('nombreArchivoInput').value.trim();
+        if (!nombre) {
+            alert('Por favor ingrese un nombre de archivo.');
+            return;
+        }
+        cerrarModalNombreArchivo();
+        if (tipoExportacion === 'excel') {
+            exportTableToExcel(tablaExportar, nombre);
+        } else if (tipoExportacion === 'pdf') {
+            exportTableToPDF(nombre);
+        }
     }
 }
 
-// Preguntar nombre para PDF y exportar
-function preguntarYExportarPDF() {
-    let nombre = prompt("Ingrese el nombre del archivo (sin extensión)", "instituciones");
-    if (nombre !== null && nombre.trim() !== "") {
-        exportTableToPDF(nombre.trim());
-    }
+function cerrarModalNombreArchivo() {
+    document.getElementById('modalNombreArchivo').style.display = 'none';
+}
+
+// Llama estos en los botones:
+function modalExportarExcel(tablaID){
+    abrirModalNombreArchivo('excel', tablaID);
+}
+function modalExportarPDF(){
+    abrirModalNombreArchivo('pdf');
 }
 
 // Exportar a Excel/CSV (punto y coma para compatibilidad)
