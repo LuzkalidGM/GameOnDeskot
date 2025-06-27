@@ -39,9 +39,9 @@ while ($row = $res3->fetch_assoc()) {
     $reservasPorMes[] = $row;
 }
 
-// 4. Torneos creados por mes (GENERAL)
+// 4. Torneos según fecha de inicio por mes (GENERAL)
 $torneosPorMes = [];
-$sqlTorneos = "SELECT DATE_FORMAT(creado_en, '%Y-%m') as periodo, COUNT(*) as cantidad 
+$sqlTorneos = "SELECT DATE_FORMAT(fecha_inicio, '%Y-%m') as periodo, COUNT(*) as cantidad 
                FROM torneos 
                GROUP BY periodo ORDER BY periodo";
 $resTorneos = $conn->query($sqlTorneos);
@@ -54,14 +54,14 @@ include_once 'header.php';
 <link rel="stylesheet" href="../../Public/cssInsDepor/estadisticas.css">
 
 <div class="dashboard-container-inst">
-    <div class="dashboard-main-content-inst" style="max-width:1800px;">
+    <div class="dashboard-main-content-inst">
         <div class="main-panel-inst">
-            <div class="content-card-inst" style="max-width:1700px; margin:auto; box-shadow:0 8px 40px rgba(44,62,80,0.13);">
-                <div class="card-header-inst" style="margin-bottom:32px;">
+            <div class="content-card-inst">
+                <div class="card-header-inst">
                     <h2><i class="fas fa-chart-bar"></i> Estadísticas Generales del Sistema</h2>
                 </div>
                 <!-- PRIMERA FILA - 3 GRAFICOS -->
-                <div class="dashboard-grid" style="grid-template-columns: repeat(3, 1fr); display: grid; gap: 36px;">
+                <div class="dashboard-grid dashboard-grid-3">
                     <div class="dashboard-card">
                         <h3>Instituciones registradas por mes</h3>
                         <canvas id="graficoInstituciones" height="160"></canvas>
@@ -71,12 +71,12 @@ include_once 'header.php';
                         <canvas id="graficoAreas" height="160"></canvas>
                     </div>
                     <div class="dashboard-card">
-                        <h3>Torneos creados por mes</h3>
+                        <h3>Torneos que inician por mes</h3>
                         <canvas id="graficoTorneos" height="160"></canvas>
                     </div>
                 </div>
                 <!-- SEGUNDA FILA - 1 GRAFICO ANCHO -->
-                <div class="dashboard-grid" style="grid-template-columns: 1fr; display: grid; gap: 36px; margin-top:40px;">
+                <div class="dashboard-grid dashboard-grid-1">
                     <div class="dashboard-card" style="min-width:0;">
                         <h3>Reservas por mes</h3>
                         <canvas id="graficoReservas" height="120"></canvas>
@@ -160,7 +160,7 @@ new Chart(document.getElementById('graficoReservas'), {
     }
 });
 
-/* 4. Torneos por mes */
+/* 4. Torneos por mes (según fecha de inicio) */
 const torneosLabels = <?= json_encode(array_column($torneosPorMes, 'periodo')) ?>;
 const torneosData = <?= json_encode(array_column($torneosPorMes, 'cantidad')) ?>;
 new Chart(document.getElementById('graficoTorneos'), {

@@ -1,0 +1,4 @@
+;/*FB_PKG_DELIM*/
+
+__d("MWEBNewUserOnboardingShouldLoadUpsells.relayprovider",["gkx","qex"],(function(a,b,c,d,e,f,g){"use strict";a={get:function(){var a;a=(a=c("qex")._("4306"))!=null?a:!1;var b=c("gkx")("14092");return a&&!b}};g["default"]=a}),98);
+__d("MWFDSAppMessenger.svg.react",["cr:21531"],(function(a,b,c,d,e,f,g){"use strict";g["default"]=b("cr:21531")}),98);
