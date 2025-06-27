@@ -52,7 +52,6 @@ foreach ($instituciones as $inst) {
                 <tr>
                     <td><?= $i+1 ?></td>
                     <td><?= htmlspecialchars($inst['nombre']) ?></td>
-                    <td><?= htmlspecialchars($inst['ruc_institucion']) ?></td>
                     <td><?= htmlspecialchars($inst['direccion']) ?></td>
                     <td>
                         <a href="https://wa.me/<?= preg_replace('/\D/', '', $inst['telefono']) ?>"
