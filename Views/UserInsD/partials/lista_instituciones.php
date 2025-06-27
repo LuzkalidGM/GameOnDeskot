@@ -7,10 +7,10 @@
         onkeyup="filtrarInstituciones()"
         autocomplete="off"
     >
-    <button onclick="exportTableToExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
+    <button onclick="preguntarYExportarExcel('tablaInstituciones')" style="margin-left:16px; padding:8px 16px; border-radius:6px; background:#218838; color:#fff; border:none;">
         <i class="fas fa-file-excel"></i> Exportar a Excel/CSV
     </button>
-    <button onclick="exportTableToPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
+    <button onclick="preguntarYExportarPDF()" style="margin-left:8px; padding:8px 16px; border-radius:6px; background:#c82333; color:#fff; border:none;">
         <i class="fas fa-file-pdf"></i> Exportar a PDF
     </button>
 </div>
@@ -86,6 +86,22 @@ function filtrarInstituciones() {
     }
 }
 
+// Preguntar nombre para Excel/CSV y exportar
+function preguntarYExportarExcel(tableID) {
+    let nombre = prompt("Ingrese el nombre del archivo (sin extensión)", "instituciones");
+    if (nombre !== null && nombre.trim() !== "") {
+        exportTableToExcel(tableID, nombre.trim());
+    }
+}
+
+// Preguntar nombre para PDF y exportar
+function preguntarYExportarPDF() {
+    let nombre = prompt("Ingrese el nombre del archivo (sin extensión)", "instituciones");
+    if (nombre !== null && nombre.trim() !== "") {
+        exportTableToPDF(nombre.trim());
+    }
+}
+
 // Exportar a Excel/CSV (punto y coma para compatibilidad)
 function exportTableToExcel(tableID, filename = ''){
     let table = document.getElementById(tableID);
@@ -114,7 +130,7 @@ function exportTableToExcel(tableID, filename = ''){
 }
 
 // Exportar a PDF (requiere jsPDF y autoTable)
-function exportTableToPDF() {
+function exportTableToPDF(filename = 'instituciones') {
     var { jsPDF } = window.jspdf;
     var doc = new jsPDF('l', 'pt', 'a4');
     doc.text("Listado de Instituciones Deportivas", 40, 40);
@@ -132,7 +148,7 @@ function exportTableToPDF() {
         headStyles: { fillColor: [184,28,34] }
     });
 
-    doc.save('instituciones.pdf');
+    doc.save(filename + '.pdf');
 }
 </script>
 
