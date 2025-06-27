@@ -2,7 +2,7 @@
     <input
         type="text"
         id="filtroInstituciones"
-        placeholder="Filtrar por nombre, RUC, dirección, teléfono o email..."
+        placeholder="Filtrar por nombre de institucion..."
         style="padding:8px 12px; width:320px; border-radius:6px; border:1px solid #ccc; font-size:1em;"
         onkeyup="filtrarInstituciones()"
         autocomplete="off"
