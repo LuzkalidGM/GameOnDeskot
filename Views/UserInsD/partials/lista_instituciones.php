@@ -37,7 +37,7 @@ foreach ($instituciones as $inst) {
             <tr>
                 <th>#</th>
                 <th>Nombre</th>
-                <th>RUC</th>
+                
                 <th>Dirección</th>
                 <th>Teléfono</th>
                 <th>Email</th>
